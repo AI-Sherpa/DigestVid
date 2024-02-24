@@ -1,0 +1,36 @@
+# Bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Build output
+build/
+dist/
+*.egg-info/
+
+archive/
+.Python
+*.log
+config.yaml
+*.tmp
+*.temp
+.env
+**/DigestVid.code-workspace
