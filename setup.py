@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'moviepy>=1.0.0',
         'whisper>=0.1',
-        'openai>=0.10.0',
+        'openai>=1.0.0',
         'yt_dlp>=2021.12.1',
     ],
     description='A tool to transcribe and summarize video content.',
