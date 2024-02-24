@@ -5,7 +5,7 @@ from pathlib import Path
 import logging
 # Import necessary functions from your package
 from digestvid.utils import is_youtube_url, download_youtube_video, process_chapter_file, extract_and_summarize, display_chapter_summaries, display_chapter_summaries_in_browser, video_output_dir
-from utils import video_output_dir
+from digestvid.utils import video_output_dir
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
