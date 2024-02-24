@@ -339,12 +339,12 @@ def display_chapter_summaries_in_browser(summary_files):
     <head>
         <title>Chapter Summaries</title>
         <style>
-            body {font-family: Arial, sans-serif;}
-            table {border-collapse: collapse; width: 100%;}
-            th, td {text-align: left; padding: 8px; border-bottom: 1px solid #ddd;}
-            th {background-color: #f2f2f2;}
-            img {max-width: 200px; height: auto;}
-            ul, ol {margin-left: 20px;}
+            body {{font-family: Arial, sans-serif;}}
+            table {{border-collapse: collapse; width: 100%;}}
+            th, td {{text-align: left; padding: 8px; border-bottom: 1px solid #ddd;}}
+            th {{background-color: #f2f2f2;}}
+            img {{max-width: 200px; height: auto;}}
+            ul, ol {{margin-left: 20px;}}
         </style>
     </head>
     <body>
@@ -360,6 +360,7 @@ def display_chapter_summaries_in_browser(summary_files):
     </body>
     </html>
     """
+
 
     rows = ""
     
