@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='digestvid',
-    version='0.0.8',
+    version='0.0.9',
     author='AI Sherpa',
     author_email='contact@ai-sherpa.com',
     packages=find_packages(),
