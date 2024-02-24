@@ -5,13 +5,13 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='digestvid',
-    version='0.0.4',
+    version='0.0.5',
     author='AI Sherpa',
     author_email='contact@ai-sherpa.com',
     packages=find_packages(),
     install_requires=[
         'moviepy>=1.0.0',
-        'whisper>=0.1',
+        'openai-whisper>=0.1',
         'openai>=1.0.0',
         'yt_dlp>=2021.12.1',
     ],
