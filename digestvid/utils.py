@@ -329,6 +329,7 @@ def display_chapter_summaries_in_browser(summary_files):
             th, td {{ text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }}
             th {{ background-color: #f2f2f2; }}
             img {{ max-width: 200px; height: auto; }}
+            ul {{ list-style-type: disc; margin-left: 20px; }}
         </style>
     </head>
     <body>
@@ -345,29 +346,34 @@ def display_chapter_summaries_in_browser(summary_files):
     </html>
     """
 
-    # Use the safe_extract_number function for sorting
-    sorted_summary_files = sorted(summary_files, key=safe_extract_number)
+    # Use the safe_extract_number function for sorting, assuming it's defined elsewhere to sort chapters
+    sorted_summary_files = sorted(summary_files, key=lambda f: int(Path(f).stem.split(' ')[-1]))
 
     # Generate table rows, now including video screenshots linked to the videos
     rows = ""
     for summary_file in sorted_summary_files:
         chapter_name = summary_file.stem.replace('_summary', '')
         summary_text = read_summary(summary_file)
-        screenshot_path = get_video_screenshot(summary_file)  # Get the screenshot path for this chapter
-        video_path = get_video_path(summary_file)  # Assuming you have a function to get the video path
+        # Convert bullet points marked by "*" into HTML list items
+        summary_text_formatted = summary_text.replace('\n* ', '\n<li>').replace('<li>', '</ul><ul><li>', 1).rstrip('</ul><ul><li>').rstrip('\n<li>') + '</ul>'
+        summary_text_formatted = summary_text_formatted if summary_text_formatted.startswith('<ul>') else '<ul>' + summary_text_formatted
+        summary_text_formatted = summary_text_formatted if summary_text_formatted.endswith('</ul>') else summary_text_formatted + '</ul>'
+        summary_text_formatted = summary_text_formatted.replace('</ul><ul>', '')
+        
+        screenshot_path = get_video_screenshot(summary_file)  # Function to get screenshot, assume defined elsewhere
+        video_path = get_video_link(summary_file)  # Function to construct video path, assume defined elsewhere
 
-        # Escape HTML special characters
-        chapter_name = chapter_name.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        summary_text = summary_text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        screenshot_html = f'<a href="{video_path.as_uri()}" target="_blank"><img src="{screenshot_path.as_uri()}" alt="Video Screenshot"></a>'
+        rows += f"""
+        <tr>
+            <td>{chapter_name}</td>
+            <td><a href="{video_path}" target="_blank"><img src="{screenshot_path}" alt="Chapter Screenshot"></a></td>
+            <td>{summary_text_formatted}</td>
+        </tr>
+        """
 
-        # Add to rows string
-        rows += f"<tr><td>{chapter_name}</td><td>{screenshot_html}</td><td>{summary_text}</td></tr>\n"
-
-    # Complete the HTML by inserting the rows
     html_content = html_template.format(rows=rows)
 
-    # Create a temporary HTML file and open it in the browser
+    # Write the HTML content to a temporary file and open it in the browser
     with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as tmp_file:
         tmp_file.write(html_content)
         webbrowser.open('file://' + os.path.realpath(tmp_file.name))
