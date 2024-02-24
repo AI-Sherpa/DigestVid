@@ -79,12 +79,12 @@ def summarize_with_openai(text):
     """
     openai_api_key = load_api_key()
     client = OpenAI(
-        base_url="http://localhost:11434/v1",
+        base_url="http://localhost:11434/v1", #Ollama by default, comment out to use OpenAI
         api_key=openai_api_key
     )
     prompt = create_summary_prompt(text)
     response = client.chat.completions.create(
-        model="aisherpa/mistral-7b-instruct-v02:Q5_K_M",
+        model="aisherpa/mistral-7b-instruct-v02:Q5_K_M", #Ollama by default, replace with "gpt-4" for OpenAI
         max_tokens=1024,
         temperature=0.1,
         top_p=1.0,
