@@ -14,6 +14,7 @@ setup(
         'openai-whisper>=2023117',
         'openai>=1.0.0',
         'yt_dlp>=2021.12.1',
+        'pyyaml>=6.0.0',
     ],
     description='A tool to transcribe and summarize video content.',
     long_description=long_description,
