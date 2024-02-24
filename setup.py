@@ -4,8 +4,8 @@ with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 setup(
-    name='DigestVid',
-    version='0.0.2',
+    name='digestvid',
+    version='0.0.3',
     author='AI Sherpa',
     author_email='contact@ai-sherpa.com',
     packages=find_packages(),

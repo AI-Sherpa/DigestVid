@@ -1,6 +1,6 @@
-# DigestVid
+# digestvid
 
-DigestVid is a Python tool designed to automatically transcribe, review, and summarize video content, making it easier to digest video content efficiently. It supports processing both local video files and YouTube videos by downloading them. The tool utilizes advanced AI models for transcription and summarization.
+digestvid is a Python tool designed to automatically transcribe, review, and summarize video content, making it easier to digest video content efficiently. It supports processing both local video files and YouTube videos by downloading them. The tool utilizes advanced AI models for transcription and summarization.
 
 ## Features
 
@@ -11,7 +11,7 @@ DigestVid is a Python tool designed to automatically transcribe, review, and sum
 
 ## Installation
 
-To install DigestVid, you will need Python 3.6 or later. It's recommended to use a virtual environment:
+To install digestvid, you will need Python 3.6 or later. It's recommended to use a virtual environment:
 
 ```bash
 python3 -m venv venv
@@ -48,11 +48,11 @@ digestvid https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
 ## Contributing
 
-Contributions to DigestVid are welcome! Here are a few ways you can help:
+Contributions to digestvid are welcome! Here are a few ways you can help:
 
 - Report bugs and request features by creating issues.
 - Contribute to the code via pull requests. Please read our contribution guidelines first.
 
 ## License
 
-DigestVid is released under the MIT License. See the LICENSE file for more details.
+digestvid is released under the MIT License. See the LICENSE file for more details.
