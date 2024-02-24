@@ -58,7 +58,7 @@ def create_summary_prompt(text):
     instruction = (
         "You are an expert AI summarizer. Review the content given to you, "
         "take your time to tease out the salient points and all the examples provided "
-        "to explain the concepts articulated clearly and concisely. "
+        "to explain the concepts articulated clearly and concisely, in bullet points where necessary."
         "Here is the content:\n\n"
     )
     prompt = instruction + text
@@ -170,12 +170,14 @@ def download_youtube_video(url, output_dir):
         if file.is_file():
             print(file.name)
     all_mp4_files = list(dedicated_output_dir.glob('*.mp4'))
-    print("all_mp4_files: ", all_mp4_files)
+    print("all_mp4_files:")
+    for file in all_mp4_files:
+        print(file,"\n")
 
     # Assuming all_mp4_files is already populated with Path objects of .mp4 files in dedicated_output_dir
 
     # Step 1: Attempt to filter for chapter files
-    chapter_files = [file for file in all_mp4_files if re.search(r'_[0-9]+_', file.name)]
+    chapter_files = [file for file in all_mp4_files if re.search(r' - (\d{3}) ', file.name)]
 
     # Step 2: If no chapter files are found, filter for "_NA_NA" files
     if not chapter_files:
