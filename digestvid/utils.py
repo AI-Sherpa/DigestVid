@@ -347,8 +347,8 @@ def display_chapter_summaries_in_browser(summary_files):
     """
 
     # Use the safe_extract_number function for sorting, assuming it's defined elsewhere to sort chapters
-    sorted_summary_files = sorted(summary_files, key=lambda f: int(Path(f).stem.split(' ')[-1]))
-
+    sorted_summary_files = sorted(summary_files, key=lambda f: safe_extract_chapter_number(Path(f)))
+    
     # Generate table rows, now including video screenshots linked to the videos
     rows = ""
     for summary_file in sorted_summary_files:
@@ -378,6 +378,17 @@ def display_chapter_summaries_in_browser(summary_files):
         tmp_file.write(html_content)
         webbrowser.open('file://' + os.path.realpath(tmp_file.name))
 
+def safe_extract_chapter_number(filename):
+    """
+    Attempts to extract a chapter number from a filename.
+    Returns the chapter number if found, or a high default value for sorting.
+    """
+    # Attempt to find a sequence of digits that likely represents the chapter number
+    match = re.search(r'\b(\d+)\b', filename.stem)
+    if match:
+        return int(match.group(1))
+    else:
+        return float('inf')  # Use infinity to ensure non-matching files sort last
 
 
 
