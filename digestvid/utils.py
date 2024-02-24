@@ -317,19 +317,34 @@ def get_video_link(summary_file):
     video_path = summary_file.parent / video_filename
     return video_path.as_uri()  # Converts the path to a URI that can be used in the HTML
 
+def extract_sequence_number(filename):
+    """
+    Extracts the first sequence of digits found in the filename and returns it as an integer.
+    If no digits are found, returns a high default value to ensure such files are sorted last.
+    """
+    match = re.search(r'\d+', filename.stem)
+    if match:
+        return int(match.group(0))
+    else:
+        return float('inf')  # Use infinity to sort non-matching files last
+
+
 def display_chapter_summaries_in_browser(summary_files):
+    # Sort the summary files based on the sequence number
+    sorted_summary_files = sorted(summary_files, key=lambda file: extract_sequence_number(Path(file)))
+
     # HTML template for the page
     html_template = """
     <html>
     <head>
         <title>Chapter Summaries</title>
         <style>
-            body {{ font-family: Arial, sans-serif; }}
-            table {{ border-collapse: collapse; width: 100%; }}
-            th, td {{ text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }}
-            th {{ background-color: #f2f2f2; }}
-            img {{ max-width: 200px; height: auto; }}
-            ul, ol {{ margin-left: 20px; }}
+            body {font-family: Arial, sans-serif;}
+            table {border-collapse: collapse; width: 100%;}
+            th, td {text-align: left; padding: 8px; border-bottom: 1px solid #ddd;}
+            th {background-color: #f2f2f2;}
+            img {max-width: 200px; height: auto;}
+            ul, ol {margin-left: 20px;}
         </style>
     </head>
     <body>
@@ -347,16 +362,16 @@ def display_chapter_summaries_in_browser(summary_files):
     """
 
     rows = ""
-    for summary_file in summary_files:
-        chapter_name = summary_file.stem.replace('_summary', '')
-        summary_text = read_summary(summary_file)
-        # Remove leading asterisks
+    
+    for summary_file in sorted_summary_files:
+        chapter_name = Path(summary_file).stem.replace('_summary', '')
+        summary_text = read_summary(Path(summary_file))
+        # Remove leading asterisks and convert bullet points and numbered lists to HTML lists
         summary_text = summary_text.lstrip('* ')
-        # Convert bullet points and numbered lists to HTML lists
         summary_text = convert_to_html_lists(summary_text)
 
-        screenshot_path = get_video_screenshot(summary_file)
-        video_path = get_video_link(summary_file)
+        screenshot_path = get_video_screenshot(Path(summary_file))
+        video_path = get_video_link(Path(summary_file))
 
         rows += f"""
         <tr>
@@ -372,6 +387,7 @@ def display_chapter_summaries_in_browser(summary_files):
     with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as tmp_file:
         tmp_file.write(html_content)
         webbrowser.open('file://' + os.path.realpath(tmp_file.name))
+
 
 def convert_to_html_lists(text):
     """Converts markdown-style lists to HTML lists."""
