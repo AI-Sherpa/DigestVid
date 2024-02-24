@@ -318,7 +318,7 @@ def get_video_link(summary_file):
     return video_path.as_uri()  # Converts the path to a URI that can be used in the HTML
 
 def display_chapter_summaries_in_browser(summary_files):
-    # HTML template for the page, now including a column for Chapter Video Screenshots linked to the videos
+    # HTML template for the page
     html_template = """
     <html>
     <head>
@@ -329,7 +329,7 @@ def display_chapter_summaries_in_browser(summary_files):
             th, td {{ text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }}
             th {{ background-color: #f2f2f2; }}
             img {{ max-width: 200px; height: auto; }}
-            ul {{ list-style-type: disc; margin-left: 20px; }}
+            ul, ol {{ margin-left: 20px; }}
         </style>
     </head>
     <body>
@@ -346,9 +346,73 @@ def display_chapter_summaries_in_browser(summary_files):
     </html>
     """
 
+    rows = ""
+    for summary_file in summary_files:
+        chapter_name = summary_file.stem.replace('_summary', '')
+        summary_text = read_summary(summary_file)
+        # Remove leading asterisks
+        summary_text = summary_text.lstrip('* ')
+        # Convert bullet points and numbered lists to HTML lists
+        summary_text = convert_to_html_lists(summary_text)
+
+        screenshot_path = get_video_screenshot(summary_file)
+        video_path = get_video_link(summary_file)
+
+        rows += f"""
+        <tr>
+            <td>{chapter_name}</td>
+            <td><a href="{video_path}" target="_blank"><img src="{screenshot_path}" alt="Chapter Screenshot"></a></td>
+            <td>{summary_text}</td>
+        </tr>
+        """
+
+    html_content = html_template.format(rows=rows)
+
+    # Write the HTML content to a temporary file and open it in the browser
+    with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as tmp_file:
+        tmp_file.write(html_content)
+        webbrowser.open('file://' + os.path.realpath(tmp_file.name))
+
+def convert_to_html_lists(text):
+    """Converts markdown-style lists to HTML lists."""
+    lines = text.split('\n')
+    html_lines = []
+    in_list = False
+    list_type = None  # 'ul' for unordered list, 'ol' for ordered list
+
+    for line in lines:
+        if line.startswith('* '):
+            if not in_list or list_type != 'ul':
+                if in_list:  # Close the previous list
+                    html_lines.append(f"</{list_type}>")
+                html_lines.append("<ul>")
+                in_list = True
+                list_type = 'ul'
+            html_lines.append(f"<li>{line[2:]}</li>")
+        elif re.match(r'\d+\.', line.strip()):
+            if not in_list or list_type != 'ol':
+                if in_list:  # Close the previous list
+                    html_lines.append(f"</{list_type}>")
+                html_lines.append("<ol>")
+                in_list = True
+                list_type = 'ol'
+            html_lines.append(f"<li>{line[line.index('.')+2:]}</li>")
+        else:
+            if in_list:  # Close the current list
+                html_lines.append(f"</{list_type}>")
+                in_list = False
+                list_type = None
+            html_lines.append(line)
+
+    if in_list:  # Ensure the final list is closed
+        html_lines.append(f"</{list_type}>")
+
+    return '<br>'.join(html_lines)
+
+
     # Use the safe_extract_number function for sorting, assuming it's defined elsewhere to sort chapters
     sorted_summary_files = sorted(summary_files, key=lambda f: safe_extract_chapter_number(Path(f)))
-    
+
     # Generate table rows, now including video screenshots linked to the videos
     rows = ""
     for summary_file in sorted_summary_files:
