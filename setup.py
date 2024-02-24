@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='digestvid',
-    version='0.0.7',
+    version='0.0.8',
     author='AI Sherpa',
     author_email='contact@ai-sherpa.com',
     packages=find_packages(),
@@ -19,7 +19,7 @@ setup(
     description='A tool to transcribe and summarize video content.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/AI-Sherpa/DigestVid',
+    url='https://github.com/AI-Sherpa/digestvid',
     license='MIT',
     classifiers=[
         'Programming Language :: Python :: 3',
