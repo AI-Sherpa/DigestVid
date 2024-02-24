@@ -11,7 +11,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'moviepy>=1.0.0',
-        'openai-whisper>=0.1',
+        'openai-whisper>=2023117',
         'openai>=1.0.0',
         'yt_dlp>=2021.12.1',
     ],
