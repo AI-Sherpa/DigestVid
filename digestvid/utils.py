@@ -125,6 +125,21 @@ def get_video_title(url):
     except subprocess.CalledProcessError as e:
         logger.error(f"An error occurred while fetching the video title: {e}")
         return None
+    
+# Custom sort function
+def sort_chapters(file):
+    # Check if the filename contains '_NA_NA'
+    if '_NA_NA.mp4' in file.name:
+        # Assign a high sort value to prioritize it lower
+        return float('inf')
+    else:
+        # Extract the chapter number and use it for sorting
+        number_match = re.search(r'_(\d+)_', file.name)
+        if number_match:
+            return int(number_match.group(1))
+        else:
+            # In case there's no match (which shouldn't happen given the filter), prioritize lower
+            return 0
 
 def download_youtube_video(url, output_dir):
     """
@@ -174,6 +189,12 @@ def download_youtube_video(url, output_dir):
 
     # Filter the files to distinguish between chapter files and non-chapter files
     chapter_files = [file for file in all_mp4_files if "_NA_NA.mp4" in file.name or re.search(r'_[0-9]+_', file.name)]
+
+    # Sort the chapter_files with the custom function
+    chapter_files_sorted = sorted(chapter_files, key=sort_chapters)
+
+    # Now, chapter_files_sorted will have chapter files with numbers first, followed by "_NA_NA" files
+    chapter_files = chapter_files_sorted
 
     if not chapter_files:
         logger.error("No relevant video files found. Please check the download.")
