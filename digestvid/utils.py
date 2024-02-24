@@ -127,10 +127,10 @@ def get_video_title(url):
         return None
 
 def download_youtube_video(url, output_dir):
-    
     """
     Downloads a YouTube video by chapters to a dedicated subfolder within the specified directory using yt-dlp via command line, if chapters are available.
-    Returns a list of paths to the downloaded chapter files.
+    If the video does not contain chapters, downloads the entire video as a single file.
+    Returns a list of paths to the downloaded chapter files or the single video file.
     """
     video_title = get_video_title(url)
     if video_title is None:
@@ -138,7 +138,6 @@ def download_youtube_video(url, output_dir):
         return []
 
     sanitized_title = sanitize_filename(video_title)
-    # Now, append the sanitized title here, ensuring it's only done once
     dedicated_output_dir = output_dir / sanitized_title
     video_output_dir["path"] = dedicated_output_dir
 
@@ -148,7 +147,6 @@ def download_youtube_video(url, output_dir):
 
     # Define the output template for yt-dlp
     output_template = str(dedicated_output_dir / f'{sanitized_title}_%(chapter_number)s_%(chapter)s.%(ext)s')
-    print(output_template)
     cmd = [
         'yt-dlp',
         url,
@@ -160,20 +158,30 @@ def download_youtube_video(url, output_dir):
     ]
 
     try:
-        # Set the working directory for the subprocess to dedicated_output_dir
         subprocess.run(cmd, check=True, cwd=str(dedicated_output_dir))
         logger.info(f"Video downloaded successfully to {dedicated_output_dir}")
     except subprocess.CalledProcessError as e:
         logger.error(f"An error occurred while downloading the video: {e}")
         return []
 
-    # After downloading, list all chapter files in the directory
-    # Assuming dedicated_output_dir is the Path object pointing to the directory containing the chapter files
-    chapter_files = list(dedicated_output_dir.glob('* - [0-9][0-9][0-9] *.mp4'))
+    # Initially, list all MP4 files
+    print("Listing all files in the dedicated_output_dir:")
+    for file in dedicated_output_dir.iterdir():
+        if file.is_file():
+            print(file.name)
+    all_mp4_files = list(dedicated_output_dir.glob('*.mp4'))
+    print("all_mp4_files: ", all_mp4_files)
 
-    print("Chapter files:")
-    print(chapter_files)
+    # Filter the files to distinguish between chapter files and non-chapter files
+    chapter_files = [file for file in all_mp4_files if "_NA_NA.mp4" in file.name or re.search(r'_[0-9]+_', file.name)]
+
+    if not chapter_files:
+        logger.error("No relevant video files found. Please check the download.")
+        return []
+
+    print("digestvi.utils: Chapter files: ",chapter_files)
     return chapter_files
+
 
 
 def is_youtube_url(url):

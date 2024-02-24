@@ -5,7 +5,7 @@ from pathlib import Path
 import logging
 # Import necessary functions from your package
 from digestvid.utils import is_youtube_url, download_youtube_video, process_chapter_file, extract_and_summarize, display_chapter_summaries, display_chapter_summaries_in_browser, video_output_dir
-from digestvid.utils import video_output_dir
+
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -20,7 +20,7 @@ def main():
     if is_youtube_url(args.video_path_or_url):
         logger.info("Downloading YouTube video...")
         # Set dedicated_output_dir based on the YouTube video
-        dedicated_output_dir = Path.home() / ".DigestVid"
+        dedicated_output_dir = Path.home() / ".digestvid"
         chapter_files = download_youtube_video(args.video_path_or_url, dedicated_output_dir)
         if not chapter_files:
             logger.error("No chapters were downloaded.")
