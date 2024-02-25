@@ -180,7 +180,7 @@ def download_youtube_video(url, output_dir):
     # Assuming all_mp4_files is already populated with Path objects of .mp4 files in dedicated_output_dir
 
     # Step 1: Attempt to filter for chapter files
-    chapter_files = [file for file in all_mp4_files if re.search(r' - (\d{3}) ', file.name)]
+    chapter_files = [file for file in all_mp4_files if re.search(r'^(\d{3})\s', file.name)]
 
     # Step 2: If no chapter files are found, filter for "_NA_NA" files
     if not chapter_files:
