@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize dedicated_output_dir at a higher scope, ensuring it's always a Path object
-dedicated_output_dir = Path.home() / ".DigestVid"  # Default initialization
+# dedicated_output_dir = Path.home() / ".DigestVid"  # Default initialization
 
 def capture_video_screenshot(video_path, output_dir):
     """
@@ -163,6 +163,9 @@ def download_youtube_video(url, output_dir):
     except subprocess.CalledProcessError as e:
         logger.error(f"An error occurred while downloading the video: {e}")
         return []
+    
+    # Call rename_files_to_shortened_format here
+    rename_files_to_shortened_format(dedicated_output_dir)
 
     # Initially, list all MP4 files
     print("Listing all files in the dedicated_output_dir:")
@@ -290,7 +293,7 @@ def display_chapter_summaries(summary_files):
 
     # Use the safe_extract_number function for sorting
     sorted_summary_files = sorted(summary_files, key=safe_extract_number)
-
+    print("display_chapter_summaries: ",sorted_summary_files)
     for summary_file in sorted_summary_files:
         chapter_name = summary_file.stem.replace('_summary', '')
 
@@ -332,7 +335,7 @@ def extract_sequence_number(filename):
 def display_chapter_summaries_in_browser(summary_files):
     # Sort the summary files based on the sequence number
     sorted_summary_files = sorted(summary_files, key=lambda file: extract_sequence_number(Path(file)))
-
+    print("display_chapter_summaries_in_browser: ",sorted_summary_files)
     # HTML template for the page
     html_template = """
     <html>
@@ -471,6 +474,24 @@ def safe_extract_chapter_number(filename):
     else:
         return float('inf')  # Use infinity to ensure non-matching files sort last
 
+import os
+
+def rename_files_to_shortened_format(directory):
+    for file in directory.glob('*.mp4'):
+        # Example original filename: "Running Gemma using HuggingFace - 001 Intro [0xhZ2OhGNDg].mp4"
+        # Your logic for extracting the sequence number and a simplified title goes here.
+        # This is a simplistic approach and might need adjustments based on actual filename patterns.
+        
+        # Extracting the chapter number and title
+        match = re.match(r'.* - (\d{3}) (.+) \[.*\].mp4', file.name)
+        if match:
+            sequence_number, title = match.groups()
+            new_filename = f"{sequence_number} {title}.mp4"
+            new_filepath = file.parent / new_filename
+
+            # Rename the file
+            file.rename(new_filepath)
+            logger.info(f"Renamed '{file.name}' to '{new_filename}'")
 
 
 if __name__ == "__main__":

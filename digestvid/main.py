@@ -45,7 +45,7 @@ def main():
         # Directly use dedicated_output_dir to glob for summary files, as it should already point to ~/.DigestVid/<VideoName>
         summary_files = list(video_output_dir["path"].glob('*_summary.txt'))
         if summary_files:
-            display_chapter_summaries(summary_files)
+            # display_chapter_summaries(summary_files)
             display_chapter_summaries_in_browser(summary_files)
         else:
             print(f"No summary files found in {video_output_dir['path']}.")
