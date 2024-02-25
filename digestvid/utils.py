@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize dedicated_output_dir at a higher scope, ensuring it's always a Path object
-# dedicated_output_dir = Path.home() / ".DigestVid"  # Default initialization
+dedicated_output_dir = Path.home() / ".digestvid"  # Default initialization
 
 def capture_video_screenshot(video_path, output_dir):
     """
